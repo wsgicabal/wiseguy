@@ -1,3 +1,5 @@
 env26
 dist/
 build/
+*.pyc
+*.egg-info

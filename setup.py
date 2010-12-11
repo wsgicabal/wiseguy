@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = []
+requires = ['colander']
 
 setup(name='wiseguy',
       version='0.0',
@@ -29,6 +29,10 @@ setup(name='wiseguy',
       install_requires = requires,
       test_suite="wiseguy",
       entry_points = """\
+      [console_scripts]
+      wiseguy = wiseguy.scripts.component:main
+      [wiseguy.component]
+      dummycomponent = wiseguy.tests:DummyComponent
       """
       )
 
