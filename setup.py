@@ -29,6 +29,10 @@ setup(name='wiseguy',
       install_requires = requires,
       test_suite="wiseguy",
       entry_points = """\
+      [console_scripts]
+      wiseguy = wiseguy.scripts.component:main
+      [wiseguy.component]
+      dummycomponent = wiseguy.tests:DummyComponent
       """
       )
 
