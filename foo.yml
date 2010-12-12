@@ -1,4 +1,8 @@
-main: 
+main:
+  component: dummy
+  config: { foo: 4 }
+
+main2:
   component: pipeline
   config: 
     apps: [ first, auth, core ]

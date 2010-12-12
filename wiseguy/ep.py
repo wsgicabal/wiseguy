@@ -8,4 +8,8 @@ class EPParser(object):
             component_name = point.name
             schema = point.load()
             yield schema, component_name
+
+    def get(self, name):
+        for point in iter_entry_points(self.EP_GROUP, name):
+            return point
             

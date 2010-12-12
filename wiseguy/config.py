@@ -1,23 +1,21 @@
-from yaml import load, dump
-try:
-    from yaml import CLoader as Loader
-    from yaml import CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
+from wiseguy import ep
 
-from .component import WSGIComponent, PipelineComponent
+from yaml import load, dump
+from yaml import Loader, Dumper
+
+ep_parser = ep.EPParser()
 
 class Config(object):
     
-    def __init__(self, components):
-        self.components = components
-
-    def load_yaml(self, stream, comp_name='main'): # always start with 'main'?
+    def load_yaml(self, stream):
         config = load(stream, Loader=Loader)
-        from pprint import pprint
-        #pprint(config)
-        self.load(config, comp_name)
-    
+        self.config = config
+
+    def load_app(self, name):
+        app_factory_factory = ep_parser.get(name).load()
+        import pdb; pdb.set_trace()
+
+
     def load(self, config, comp_name):
         comp_type = config[comp_name]['component']
         comp_config = config[comp_name].get('config', {})
@@ -32,11 +30,13 @@ class Config(object):
         
 
 def test():
-    c = Config(components = {
-        'pipeline': PipelineComponent,
-        #'auth-middleware': MyComponent(),
-    })
+    c = Config()
     from os.path import dirname
     c.load_yaml(open(dirname(__file__)+'/../foo.yml'))
+    c.load_app('main')
         
     assert False
+
+
+if __name__ == '__main__':
+    test()
