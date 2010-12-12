@@ -1,22 +1,21 @@
-from cStringIO import StringIO
-
 from wiseguy import ep
 
 from yaml import load, Loader
 
-ep_parser = ep.EPParser()
-
 class AppLoader(object):
 
-    def __init__(self):
+    def __init__(self, ep_parser):
         self.apps = {}
+        self.ep_parser = ep_parser
     
     def load_yaml(self, stream):
-        configfile = load(stream, Loader=Loader)
-        for app_name, defn in configfile.iteritems():
+        self.load(load(stream, Loader=Loader))
+    
+    def load(self, config):
+        for app_name, defn in config.iteritems():
             component_name = defn['component']
             component_config = defn.get('config', {})
-            component = ep_parser.get(component_name).load()
+            component = self.ep_parser.get(component_name).load()
             schema = component.schema.bind(loader=self)
             self.apps[app_name] = dict(
                 factory = component.factory,
@@ -26,7 +25,6 @@ class AppLoader(object):
     def load_app(self, app_name):
         app = self.apps[app_name]
         config = app['schema'].deserialize(app['config'])
-        print 'Deserialize config for', app_name
         factory = app['factory']
         def result(*extra_args, **extra_kwargs):
             kwargs = dict(config)
@@ -35,6 +33,7 @@ class AppLoader(object):
         return result
 
 def test():
+    from cStringIO import StringIO
     from wsgiref.simple_server import make_server
     test_config_file = StringIO('''
 main:
@@ -55,7 +54,7 @@ dummy:
   config: { foo: 4 }
 
 ''')
-    c = AppLoader()
+    c = AppLoader(ep.EPParser())
     c.load_yaml(test_config_file)
     main = c.load_app('main')
 
