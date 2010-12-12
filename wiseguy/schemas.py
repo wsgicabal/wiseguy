@@ -10,9 +10,6 @@ import urlparse
 #class Test(TupleSchema):
 #    name = SchemaNode(String())
 
-class Apps(SequenceSchema):
-    app_name = SchemaNode(String())
-    
 class Url(SchemaType):
     """
     returns a urlparse.ParseResult

@@ -25,12 +25,27 @@ class AppLoader(object):
 
     def load_app(self, app_name):
         app = self.apps[app_name]
-        kwargs = app['schema'].deserialize(app['config'])
-        return app['factory'](**kwargs)
+        config = app['schema'].deserialize(app['config'])
+        print 'Deserialize config for', app_name
+        factory = app['factory']
+        def result(*extra_args, **extra_kwargs):
+            kwargs = dict(config)
+            kwargs.update(extra_kwargs)
+            return factory(*extra_args, **kwargs)
+        return result
 
 def test():
+    from wsgiref.simple_server import make_server
     test_config_file = StringIO('''
 main:
+  component: pipeline
+  config:
+    apps: [ filter, dummy ]
+
+filter:
+   component: dummyfilter
+
+dummy:
   component: dummycomponent
   config: { foo: 4 }
 
@@ -38,9 +53,9 @@ main:
     c = AppLoader()
     c.load_yaml(test_config_file)
     main = c.load_app('main')
-    print main
-    assert False
 
+    httpd = make_server('', 8000, main())
+    httpd.serve_forever()
 
 if __name__ == '__main__':
     test()

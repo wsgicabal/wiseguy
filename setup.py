@@ -33,6 +33,8 @@ setup(name='wiseguy',
       wiseguy = wiseguy.scripts.component:main
       [wiseguy.component]
       dummycomponent = wiseguy.tests:DummyComponent
+      dummyfilter = wiseguy.tests:DummyFilter
+      pipeline = wiseguy.component:PipelineComponent
       """
       )
 
