@@ -1,14 +1,6 @@
 from colander import SchemaType, Invalid, null, Schema, SchemaNode, _
-from colander import SequenceSchema, String, TupleSchema
 import sys
 import urlparse
-
-
-#class App(String):
-#    pass
-
-#class Test(TupleSchema):
-#    name = SchemaNode(String())
 
 class Url(SchemaType):
     """

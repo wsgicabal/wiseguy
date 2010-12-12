@@ -1,6 +1,5 @@
 import sys
 import colander
-from . import schemas
 
 @colander.deferred
 def app_type(node, kw):
