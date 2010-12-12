@@ -1,15 +1,13 @@
 main: 
   component: pipeline
   config: 
-    apps: [ first, auth ]
+    apps: [ first, auth, core ]
 
 first:
   component: gzip-middleware
-  # config: { next: auth } is implied by the pipeline above
 
 auth:
   component: auth-middleware
-  config: { next: core }
 
 core:
   component: cascade
