@@ -1,0 +1,31 @@
+main: 
+  component: pipeline
+  config: 
+    apps: [ first, auth ]
+
+first:
+  component: gzip-middleware
+  # config: { next: auth } is implied by the pipeline above
+
+auth:
+  component: auth-middleware
+  config: { next: core }
+
+core:
+  component: cascade
+  config:
+    apps: [ static, dynamic, app3, include: foo.yml@section ]
+        
+static: 
+  component: static
+  config: { directory: foo }
+
+dynamic:
+  component: pyramid
+  config: { templates: foo }
+
+app3:
+  component: pyramid
+  config: 
+    templates: bar
+
