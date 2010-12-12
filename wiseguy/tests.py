@@ -1,5 +1,7 @@
-class DummySchema(object):
-    pass
+import colander
+
+class DummySchema(colander.MappingSchema):
+    foo = colendar.SchemaNode(colendar.Int())
 
 class DummyFactory(object):
     pass
