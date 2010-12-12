@@ -40,7 +40,12 @@ def test():
 main:
   component: pipeline
   config:
-    apps: [ filter, dummy ]
+    apps: [ compress, filter, dummy ]
+
+compress:
+  component: gzip
+  config:
+    compress_level: 6
 
 filter:
    component: dummyfilter

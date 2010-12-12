@@ -35,6 +35,7 @@ setup(name='wiseguy',
       dummycomponent = wiseguy.tests:DummyComponent
       dummyfilter = wiseguy.tests:DummyFilter
       pipeline = wiseguy.component:PipelineComponent
+      gzip = wiseguy.component:GZipComponent
       """
       )
 
