@@ -1,7 +1,7 @@
 import colander
 
 class DummySchema(colander.MappingSchema):
-    foo = colendar.SchemaNode(colendar.Int())
+    foo = colendar.SchemaNode(colander.Int())
 
 class DummyFactory(object):
     pass
