@@ -4,18 +4,31 @@ from yaml import load, Loader
 
 class AppLoader(object):
 
-    def __init__(self, ep_parser):
+    def __init__(self, ep_parser=None):
+        if ep_parser is None:
+            self.ep_parser = ep.EPParser()
+        else:
+            self.ep_parser = ep_parser
         self.apps = {}
-        self.ep_parser = ep_parser
+        # extra non-entry point components
+        self.components = {}
     
     def load_yaml(self, stream):
         self.load(load(stream, Loader=Loader))
-    
+   
+    def add_component(self, name, klass):
+        self.components[name] = klass
+
     def load(self, config):
         for app_name, defn in config.iteritems():
+            print app_name
             component_name = defn['component']
             component_config = defn.get('config', {})
-            component = self.ep_parser.get(component_name).load()
+            component = self.ep_parser.get(component_name)
+            if component:
+                component = component.load() 
+            else:
+                component = self.components[component_name]
             schema = component.schema.bind(loader=self)
             self.apps[app_name] = dict(
                 factory = component.factory,
@@ -31,35 +44,3 @@ class AppLoader(object):
             kwargs.update(extra_kwargs)
             return factory(*extra_args, **kwargs)
         return result
-
-def test():
-    from cStringIO import StringIO
-    from wsgiref.simple_server import make_server
-    test_config_file = StringIO('''
-main:
-  component: pipeline
-  config:
-    apps: [ compress, filter, dummy ]
-
-compress:
-  component: gzip
-  config:
-    compress_level: 6
-
-filter:
-   component: dummyfilter
-
-dummy:
-  component: dummycomponent
-  config: { foo: 4 }
-
-''')
-    c = AppLoader(ep.EPParser())
-    c.load_yaml(test_config_file)
-    main = c.load_app('main')
-
-    httpd = make_server('', 8000, main())
-    httpd.serve_forever()
-
-if __name__ == '__main__':
-    test()

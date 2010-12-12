@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = ['colander', 'pyyaml']
+requires = ['colander', 'pyyaml', 'webob']
 
 setup(name='wiseguy',
       version='0.0',
@@ -21,7 +21,7 @@ setup(name='wiseguy',
       author="WSGI Cabal",
       author_email="http://lists.repoze.org/listinfo/wsgi-cabal",
       url="",
-      license="Undecided",
+      license="MIT",
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
@@ -32,10 +32,11 @@ setup(name='wiseguy',
       [console_scripts]
       wiseguy = wiseguy.scripts.component:main
       [wiseguy.component]
-      dummycomponent = wiseguy.tests:DummyComponent
-      dummyfilter = wiseguy.tests:DummyFilter
       pipeline = wiseguy.component:PipelineComponent
       gzip = wiseguy.adapter.paste:GZipComponent
       """
+      # where do thse go?
+      #dummycomponent = wiseguy.tests:DummyComponent
+      #dummyfilter = wiseguy.tests:DummyFilter
       )
 

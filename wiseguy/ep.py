@@ -1,3 +1,4 @@
+""" ep - entry point parser """
 from pkg_resources import iter_entry_points
 
 class EPParser(object):
