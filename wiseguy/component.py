@@ -1,6 +1,5 @@
 import sys
 import colander
-import paste.gzipper
 
 @colander.deferred
 def app_type(node, kw):
@@ -39,11 +38,6 @@ class WiseSchema(colander.Schema):
 class PipelineSchema(WiseSchema):
     apps = Apps()
 
-class GZipSchema(WiseSchema):
-    compress_level = colander.SchemaNode(
-        colander.Int(),
-        missing=6)
-
 def PipelineFactory(apps, **config):
     app = apps[-1]()
     for filter in apps[-2::-1]:
@@ -59,6 +53,3 @@ PipelineComponent = WSGIComponent(
     schema=PipelineSchema(),
     factory=PipelineFactory)
 
-GZipComponent = WSGIComponent(
-    schema=GZipSchema(),
-    factory=paste.gzipper.middleware)
