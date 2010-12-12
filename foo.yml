@@ -1,5 +1,5 @@
 main:
-  component: dummy
+  component: dummycomponent
   config: { foo: 4 }
 
 main2:
