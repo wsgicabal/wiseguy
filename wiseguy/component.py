@@ -54,7 +54,9 @@ def pipeline_factory(apps):
 class GZipSchema(StrictSchema):
     compress_level = colander.SchemaNode(
         colander.Int(),
+        validator=colander.Range(1, 9),
         missing=6,
+        default=6,
         )
 
 PipelineComponent = WSGIComponent(
