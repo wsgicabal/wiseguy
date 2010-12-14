@@ -1,16 +1,35 @@
-from wiseguy.loader import AppLoader
 import unittest
 
 class TestAppLoaderFunctional(unittest.TestCase):
     def test_it(self):
-        c = AppLoader()
-        c.add_component('dummyfilter', DummyFilter)
-        c.add_component('dummycomponent', DummyComponent)
-        c.load_yaml(test_config_file)
-        app = c.load_app('main')
-        self.failUnless(app)
+        from StringIO import StringIO
+        import webob
+        import gzip
+        import paste.gzipper
+        from wiseguy.loader import AppLoader
+        loader = AppLoader()
+        loader.add_component('dummyfilter', DummyFilter)
+        loader.add_component('dummycomponent', DummyComponent)
+        loader.load_yaml(test_config_file)
+        app_factory = loader.get_app_factory('main')
+        app = app_factory()
+        self.assertEqual(app.__class__, paste.gzipper.middleware)
+        self.assertEqual(app.application.__class__, DummyFilterFactory)
+        self.assertEqual(app.application.app.__class__, DummyFactory)
+        request = webob.Request.blank('/')
+        request.environ['HTTP_ACCEPT_ENCODING'] = 'gzip'
+        status, headerlist, body = request.call_application(app)
+        self.assertEqual(status, '200 OK')
+        self.assertEqual(headerlist,
+                         [('Content-Type', 'text/html; charset=UTF-8'),
+                          ('content-encoding', 'gzip'),
+                          ('Content-Length', '38')])
+        io = StringIO(body[0])
+        f = gzip.GzipFile(mode='r', fileobj=io)
+        self.assertEqual(f.read(), '<h1>Hello dummy</h1>')
 
 import colander
+from wiseguy.component import WSGIComponent
 
 from cStringIO import StringIO
 test_config_file = StringIO('''
@@ -39,7 +58,7 @@ class DummySchema(colander.MappingSchema):
 class DummyFactory(object):
 
     def __init__(self, **kwargs):
-        print 'DummyFactory called with %r' % kwargs
+        self.kwargs = kwargs
 
     def __call__(self, environ, start_response):
         from webob import Response
@@ -50,7 +69,6 @@ class DummyFactory(object):
 class DummyFilterFactory(object):
 
     def __init__(self, app, **kwargs):
-        print 'DummyFilterFactory called with %r, %r' % (app, kwargs)
         self.app = app
 
     def __call__(self, environ, start_response):
@@ -59,10 +77,12 @@ class DummyFilterFactory(object):
 class DummyApp(object):
     pass
 
-class DummyComponent(object):
-    schema = DummySchema()
-    factory = DummyFactory
+DummyComponent = WSGIComponent(
+    schema = DummySchema(),
+    factory = DummyFactory,
+    )
 
-class DummyFilter(object):
-    schema = colander.MappingSchema()
-    factory = DummyFilterFactory
+DummyFilter = WSGIComponent(
+    schema = colander.MappingSchema(),
+    factory = DummyFilterFactory,
+    )

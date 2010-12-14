@@ -1,5 +1,5 @@
 import optparse
-from wiseguy.ep import EPParser
+from wiseguy.loader import EPParser
 
 class HelpFormatter(optparse.IndentedHelpFormatter):
 
@@ -23,8 +23,8 @@ def main(argv=None):
 
     if options.list_components:
         ep_parser = EPParser()
-        for schema, component_name in ep_parser.show():
-            print schema, component_name
+        for component_name, component in ep_parser.get_components():
+            print component_name, component
 
 if __name__ == '__main__':
     import sys
