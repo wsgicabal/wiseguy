@@ -1,5 +1,14 @@
 import sys
 import colander
+import paste.gzipper
+
+
+class WiseSchema(colander.Schema):
+
+    @classmethod
+    def schema_type(cls):
+        return colander.Mapping(unknown='raise')
+    
 
 @colander.deferred
 def app_type(node, kw):
@@ -29,12 +38,11 @@ class WSGIApp(colander.SchemaType):
 class Apps(colander.SequenceSchema):
     app = colander.SchemaNode(app_type)
 
-class WiseSchema(colander.Schema):
+class WSGIComponent(object):
+    def __init__(self, schema, factory):
+        self.schema = schema
+        self.factory = factory
 
-    @classmethod
-    def schema_type(cls):
-        return colander.Mapping(unknown='raise')
-    
 class PipelineSchema(WiseSchema):
     apps = Apps()
 
@@ -44,12 +52,15 @@ def PipelineFactory(apps, **config):
         app = filter(app)
     return app
 
-class WSGIComponent(object):
-    def __init__(self, schema, factory):
-        self.schema = schema
-        self.factory = factory
-
 PipelineComponent = WSGIComponent(
     schema=PipelineSchema(),
     factory=PipelineFactory)
 
+class GZipSchema(WiseSchema):
+    compress_level = colander.SchemaNode(
+        colander.Int(),
+        missing=6)
+
+GZipComponent = WSGIComponent(
+    schema=GZipSchema(),
+    factory=paste.gzipper.middleware)

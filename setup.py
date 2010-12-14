@@ -33,7 +33,7 @@ setup(name='wiseguy',
       wiseguy = wiseguy.scripts.component:main
       [wiseguy.component]
       pipeline = wiseguy.component:PipelineComponent
-      gzip = wiseguy.adapter.paste:GZipComponent
+      gzip = wiseguy.component:GZipComponent
       """
       )
 
