@@ -21,6 +21,12 @@ def main(argv=None):
 
     options, args = parser.parse_args(argv[1:])
 
+    if args:
+        if args[0] == 'serve':
+            from paste.httpserver import serve
+            from wiseguy.app import configurator
+            serve(configurator)
+
     if options.list_components:
         ep_parser = EPParser()
         for component_name, component in ep_parser.get_components():
