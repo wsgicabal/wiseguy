@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = ['colander', 'pyyaml', 'webob']
+requires = ['colander', 'pyyaml', 'webob', 'Paste']
 
 setup(name='wiseguy',
       version='0.0',
@@ -27,7 +27,7 @@ setup(name='wiseguy',
       zip_safe=False,
       tests_require = requires,
       install_requires = requires,
-      test_suite="wiseguy",
+      test_suite="wiseguy.tests",
       entry_points = """\
       [console_scripts]
       wiseguy = wiseguy.scripts.component:main
@@ -35,8 +35,5 @@ setup(name='wiseguy',
       pipeline = wiseguy.component:PipelineComponent
       gzip = wiseguy.adapter.paste:GZipComponent
       """
-      # where do thse go?
-      #dummycomponent = wiseguy.tests:DummyComponent
-      #dummyfilter = wiseguy.tests:DummyFilter
       )
 

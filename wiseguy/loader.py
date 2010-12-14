@@ -21,7 +21,6 @@ class AppLoader(object):
 
     def load(self, config):
         for app_name, defn in config.iteritems():
-            print app_name
             component_name = defn['component']
             component_config = defn.get('config', {})
             component = self.ep_parser.get(component_name)
