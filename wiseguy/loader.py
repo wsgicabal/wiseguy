@@ -1,12 +1,25 @@
-from wiseguy import ep
-
 from yaml import load, Loader
+
+from pkg_resources import iter_entry_points
+
+class EPParser(object):
+    EP_GROUP = 'wiseguy.component'
+
+    def show(self):
+        for point in list(iter_entry_points(self.EP_GROUP)):
+            component_name = point.name
+            schema = point.load()
+            yield schema, component_name
+
+    def get(self, name):
+        for point in iter_entry_points(self.EP_GROUP, name):
+            return point
 
 class AppLoader(object):
 
     def __init__(self, ep_parser=None):
         if ep_parser is None:
-            self.ep_parser = ep.EPParser()
+            self.ep_parser = EPParser()
         else:
             self.ep_parser = ep_parser
         self.apps = {}
