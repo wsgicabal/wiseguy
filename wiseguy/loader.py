@@ -1,13 +1,13 @@
 from yaml import load
-from yaml import Loader
 
 from pkg_resources import iter_entry_points
 
 class EPParser(object):
     EP_GROUP = 'wiseguy.component'
+    iter_entry_points = iter_entry_points # for testing
 
     def get_components(self):
-        for point in list(iter_entry_points(self.EP_GROUP)):
+        for point in list(self.iter_entry_points(self.EP_GROUP)):
             component_name = point.name
             component = point.load()
             yield component_name, component
@@ -27,7 +27,7 @@ class AppLoader(object):
     def load_yaml(self, stream):
         if not hasattr(stream, 'read'):
             stream = open(stream, 'r')
-        self.load(load(stream, Loader=Loader))
+        self.load(load(stream))
 
     def load(self, sections):
         for app_name, section in sections.items():
