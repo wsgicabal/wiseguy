@@ -4,17 +4,26 @@ helloworld:
 notfound:
   component: notfound
 
-pipe:
-  component: pipeline
-  config:
-    apps: [ compress, helloworld ]
+pony:
+  component: egg:Paste#pony
 
 compress:
   component: gzip
   config:
     compress_level: 6
 
+pipe:
+  component: pipeline
+  config:
+    apps: [ compress, pony, helloworld ]
+
+static:
+  component: paste.urlparser.make_static
+  type: paste.app_factory
+  config:
+     document_root: /home/chrism
+
 main:
   component: cascade
   config:
-    apps: [ notfound, pipe ]
+    apps: [ static, pipe ]
