@@ -33,7 +33,9 @@ class AppLoader(object):
         for app_name, section in sections.items():
             component_name = section['component']
             config = section.get('config', {})
-            component = self.components[component_name]
+            component = self.components.get(component_name)
+            if component is None:
+                raise ValueError('No such component %r' % component_name)
             app_factory = AppFactory(
                 name = app_name,
                 component = component,
