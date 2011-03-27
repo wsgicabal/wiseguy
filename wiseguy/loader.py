@@ -2,6 +2,8 @@ from yaml import load
 
 from pkg_resources import iter_entry_points
 
+from wiseguy.schema import NoSchema
+
 class EPParser(object):
     EP_GROUP = 'wiseguy.component'
     iter_entry_points = iter_entry_points # for testing
@@ -46,7 +48,7 @@ class AppLoader(object):
 
     def get_app_factory(self, app_name):
         return self.app_factories[app_name]
-    
+
 class AppFactory(object):
     def __init__(self, name, component, config, loader):
         self.name = name
@@ -57,7 +59,10 @@ class AppFactory(object):
     def __call__(self, *arg, **kw):
         component = self.component
         config = self.config
-        schema = component.schema.bind(loader=self.loader)
+        schema = component.schema
+        if schema is None:
+            schema = NoSchema()
+        schema = schema.bind(loader=self.loader)
         deserialized_config = schema.deserialize(config)
         extended = dict(deserialized_config)
         extended.update(kw)

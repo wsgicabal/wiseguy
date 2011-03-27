@@ -33,7 +33,10 @@ setup(name='wiseguy',
       wiseguy = wiseguy.scripts.command:main
       [wiseguy.component]
       pipeline = wiseguy.components.pipeline:PipelineComponent
+      cascade = wiseguy.components.cascade:CascadeComponent
       gzip = wiseguy.components.gzip:GZipComponent
+      helloworld = wiseguy.components.helloworld:HelloWorldComponent
+      notfound = wiseguy.components.notfound:NotFoundComponent
       """
       )
 

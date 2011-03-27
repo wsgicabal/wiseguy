@@ -1,3 +1,9 @@
+"""
+compress:
+    component: gzip
+    config:
+        compress_level: 6
+"""
 import colander
 import paste.gzipper
 

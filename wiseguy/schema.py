@@ -8,6 +8,10 @@ class StrictSchema(colander.Schema):
     def schema_type(cls):
         return colander.Mapping(unknown='raise')
 
+class NoSchema(colander.MappingSchema):
+    @classmethod
+    def schema_type(cls):
+        return colander.Mapping(unknown='preserve')
 
 class Url(colander.SchemaType):
     """
@@ -46,4 +50,27 @@ class Url(colander.SchemaType):
                                      mapping={'val':cstruct, 'err': e})
                                    )
 
+
+@colander.deferred
+def WSGIApp(node, kw):
+    return _WSGIApp(loader=kw['loader'])
+
+class _WSGIApp(colander.SchemaType):
+    def __init__(self, loader):
+        self.loader = loader
+
+    def deserialize(self, node, cstruct):
+        # cstruct is app name
+        if not cstruct:
+            raise colander.Invalid(node, _('Required'))
+
+        try:
+            app_factory = self.loader.get_app_factory(cstruct)
+            return app_factory
+        except Exception, e:
+            raise colander.Invalid(
+                node,
+                _('"${val}" is invalid (${err})',
+                  mapping={'val':cstruct, 'err': e})
+                )
 

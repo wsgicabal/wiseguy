@@ -1,10 +1,19 @@
 import optparse
 from wiseguy.loader import EPParser
+from wiseguy.loader import AppLoader
+
+from wsgiref.simple_server import make_server
 
 class HelpFormatter(optparse.IndentedHelpFormatter):
 
     def format_description(self, description):
         return '%s\n' % description
+
+def serve(app):
+    server = make_server('', 8080, app)
+    sa = server.socket.getsockname()
+    print "Serving %s on" % app, sa[0], "port", sa[1], "..."
+    server.serve_forever()
 
 def main(argv=None):
     if argv is None:
@@ -23,12 +32,16 @@ def main(argv=None):
 
     if args:
         if args[0] == 'webconfig':
-            from wsgiref.simple_server import make_server
             from wiseguy.web.app import configurator
-            server = make_server('', 8080, configurator)
-            sa = server.socket.getsockname()
-            print "Serving configurator on", sa[0], "port", sa[1], "..."
-            server.serve_forever()
+            serve(configurator)
+
+        if args[0] == 'serve':
+            filename = args[1]
+            loader = AppLoader()
+            loader.load_yaml(filename)
+            app_factory = loader.get_app_factory('main')
+            app = app_factory()
+            serve(app)
 
     if options.list_components:
         ep_parser = EPParser()

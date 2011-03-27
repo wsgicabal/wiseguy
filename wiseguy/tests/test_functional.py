@@ -1,4 +1,7 @@
 import unittest
+import colander
+
+from wiseguy import WSGIComponent
 
 class TestAppLoaderFunctional(unittest.TestCase):
     def test_it(self):
@@ -27,9 +30,6 @@ class TestAppLoaderFunctional(unittest.TestCase):
         io = StringIO(body[0])
         f = gzip.GzipFile(mode='r', fileobj=io)
         self.assertEqual(f.read(), '<h1>Hello dummy</h1>')
-
-import colander
-from wiseguy import WSGIComponent
 
 from cStringIO import StringIO
 test_config_file = StringIO('''

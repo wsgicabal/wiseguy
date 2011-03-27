@@ -1,33 +1,20 @@
-main:
-  component: dummycomponent
-  config: { foo: 4 }
+helloworld:
+  component: helloworld
 
-main2:
+notfound:
+  component: notfound
+
+pipe:
   component: pipeline
-  config: 
-    apps: [ first, auth, core ]
+  config:
+    apps: [ compress, helloworld ]
 
-first:
-  component: gzip-middleware
+compress:
+  component: gzip
+  config:
+    compress_level: 6
 
-auth:
-  component: auth-middleware
-
-core:
+main:
   component: cascade
   config:
-    apps: [ static, dynamic, app3, include: foo.yml@section ]
-        
-static: 
-  component: static
-  config: { directory: foo }
-
-dynamic:
-  component: pyramid
-  config: { templates: foo }
-
-app3:
-  component: pyramid
-  config: 
-    templates: bar
-
+    apps: [ notfound, pipe ]

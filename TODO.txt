@@ -7,3 +7,5 @@
 - Provide a mechanism to disuse entry points and point at a component
   directly.
 
+- Much friendlier error messages when schema is not satisfied or there's a
+  bug in a factory.
