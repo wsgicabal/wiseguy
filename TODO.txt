@@ -1,0 +1,9 @@
+- Finish or delete web.app.
+
+- Provide a way to specify a server.
+
+- Provide a way to consume Paste entry points.
+
+- Provide a mechanism to disuse entry points and point at a component
+  directly.
+

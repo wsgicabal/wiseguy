@@ -29,7 +29,7 @@ class TestAppLoaderFunctional(unittest.TestCase):
         self.assertEqual(f.read(), '<h1>Hello dummy</h1>')
 
 import colander
-from wiseguy.component import WSGIComponent
+from wiseguy import WSGIComponent
 
 from cStringIO import StringIO
 test_config_file = StringIO('''

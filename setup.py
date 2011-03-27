@@ -32,8 +32,8 @@ setup(name='wiseguy',
       [console_scripts]
       wiseguy = wiseguy.scripts.command:main
       [wiseguy.component]
-      pipeline = wiseguy.component:PipelineComponent
-      gzip = wiseguy.component:GZipComponent
+      pipeline = wiseguy.components.pipeline:PipelineComponent
+      gzip = wiseguy.components.gzip:GZipComponent
       """
       )
 

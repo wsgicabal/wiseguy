@@ -22,10 +22,13 @@ def main(argv=None):
     options, args = parser.parse_args(argv[1:])
 
     if args:
-        if args[0] == 'serve':
-            from paste.httpserver import serve
-            from wiseguy.app import configurator
-            serve(configurator)
+        if args[0] == 'webconfig':
+            from wsgiref.simple_server import make_server
+            from wiseguy.web.app import configurator
+            server = make_server('', 8080, configurator)
+            sa = server.socket.getsockname()
+            print "Serving configurator on", sa[0], "port", sa[1], "..."
+            server.serve_forever()
 
     if options.list_components:
         ep_parser = EPParser()

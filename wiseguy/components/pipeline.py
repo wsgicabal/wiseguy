@@ -1,19 +1,8 @@
-import sys
 import colander
-import paste.gzipper
-from translationstring import TranslationStringFactory
 
-_ = TranslationStringFactory('wiseguy')
-
-class StrictSchema(colander.Schema):
-    @classmethod
-    def schema_type(cls):
-        return colander.Mapping(unknown='raise')
-    
-class WSGIComponent(object):
-    def __init__(self, schema, factory):
-        self.schema = schema
-        self.factory = factory
+from wiseguy import StrictSchema
+from wiseguy import _
+from wiseguy import WSGIComponent
 
 @colander.deferred
 def WSGIApp(node, kw):
@@ -31,8 +20,7 @@ class _WSGIApp(colander.SchemaType):
         try:
             app_factory = self.loader.get_app_factory(cstruct)
             return app_factory
-        except Exception:
-            e = sys.exc_info()[1]
+        except Exception, e:
             raise colander.Invalid(
                 node,
                 _('"${val}" is invalid (${err})',
@@ -51,20 +39,7 @@ def pipeline_factory(apps):
         app = middleware(app)
     return app
 
-class GZipSchema(StrictSchema):
-    compress_level = colander.SchemaNode(
-        colander.Int(),
-        validator=colander.Range(1, 9),
-        missing=6,
-        default=6,
-        )
-
 PipelineComponent = WSGIComponent(
     schema=PipelineSchema(),
     factory=pipeline_factory,
-    )
-
-GZipComponent = WSGIComponent(
-    schema=GZipSchema(),
-    factory=paste.gzipper.middleware,
     )

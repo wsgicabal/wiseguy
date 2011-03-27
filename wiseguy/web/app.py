@@ -13,6 +13,7 @@ def deferred_component_validator(node, kw):
             if val == component_name:
                 return
         raise colander.Invalid(node, 'No such component named %s' % val)
+    return validate
 
 @colander.deferred
 def deferred_component_widget(node, kw):
